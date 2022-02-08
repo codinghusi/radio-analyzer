@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Radio {
+  id         Int         @id @default(autoincrement())
+  name       String
+  moderators Moderator[]
+}
+
+model Moderator {
+  id         Int         @id @default(autoincrement())
+  name       String
+  radio      Radio       @relation(fields: [radioId], references: [id])
+  radioId    Int
+  broadcasts Broadcast[]
+  Shift      Shift[]
+}
+
+model Shift {
+  id          Int       @id @default(autoincrement())
+  start       DateTime
+  end         DateTime
+  moderator   Moderator @relation(fields: [moderatorId], references: [id])
+  moderatorId Int
+}
+
+model Broadcast {
+  id              Int           @id @default(autoincrement())
+  moderators      Moderator[]
+  type            BroadcastType @relation(fields: [broadcastTypeId], references: [id])
+  time_from       DateTime
+  time_to         DateTime
+  broadcastTypeId Int
+}
+
+model BroadcastType {
+  id         Int         @id @default(autoincrement())
+  name       String
+  broadcasts Broadcast[]
+}
+
+model Song {
+  id         Int      @id @default(autoincrement())
+  title      String
+  album      Album    @relation(fields: [albumId], references: [id])
+  interprets Artist[]
+
+  danceability     Float
+  energy           Float
+  key              Int
+  loudness         Float
+  mode             Int
+  speechiness      Float
+  acousticness     Float
+  instrumentalness Float
+  liveness         Float
+  valence          Float
+  tempo            Float
+  duration_ms      Float
+  time_signature   Int
+  popularity       Int
+  preview_url      String
+  track_number     Int
+  disc_number      Int
+  spotify_id       String
+  albumId          Int
+}
+
+model Album {
+  id    Int    @id @default(autoincrement())
+  title String
+  songs Song[]
+}
+
+model Artist {
+  id     Int     @id @default(autoincrement())
+  name   String
+  songs  Song[]
+  genres Genre[]
+}
+
+model Genre {
+  id      Int      @id @default(autoincrement())
+  name    String
+  artists Artist[]
+}

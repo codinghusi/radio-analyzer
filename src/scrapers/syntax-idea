@@ -1,0 +1,17 @@
+
+path User {
+    // helpers
+    fn is_owner() {
+        return @id == $user?.id;
+    }
+
+    // permissions
+    when is_owner() {
+        unless { password } allow read;
+        unless { id, password } allow write;
+    }
+
+    when is_authenticated() {
+        for { username, posts, roles } allow read;
+    }
+}
